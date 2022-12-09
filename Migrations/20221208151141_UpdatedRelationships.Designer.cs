@@ -4,6 +4,7 @@ using BankClientApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BankClientApi.Migrations
 {
     [DbContext(typeof(BankClientsDbContext))]
-    partial class BankClientsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221208151141_UpdatedRelationships")]
+    partial class UpdatedRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -7388,14 +7390,14 @@ namespace BankClientApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("BankAccountNumber")
+                    b.Property<string>("Bank")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("BankBranch")
-                        .HasColumnType("int");
+                    b.Property<string>("BankAccountNumber")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("BankCode")
+                    b.Property<int>("BankBranch")
                         .HasColumnType("int");
 
                     b.Property<int>("CityId")
@@ -7406,13 +7408,11 @@ namespace BankClientApi.Migrations
 
                     b.Property<string>("EnglishName")
                         .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HebrewName")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SSN")
                         .IsRequired()
@@ -7427,11 +7427,13 @@ namespace BankClientApi.Migrations
 
             modelBuilder.Entity("BankClientApi.Data.Client", b =>
                 {
-                    b.HasOne("BankClientApi.Data.City", null)
+                    b.HasOne("BankClientApi.Data.City", "City")
                         .WithMany("Clients")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("BankClientApi.Data.City", b =>

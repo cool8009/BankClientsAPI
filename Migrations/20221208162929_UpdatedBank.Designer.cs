@@ -4,6 +4,7 @@ using BankClientApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BankClientApi.Migrations
 {
     [DbContext(typeof(BankClientsDbContext))]
-    partial class BankClientsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221208162929_UpdatedBank")]
+    partial class UpdatedBank
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -7427,11 +7429,13 @@ namespace BankClientApi.Migrations
 
             modelBuilder.Entity("BankClientApi.Data.Client", b =>
                 {
-                    b.HasOne("BankClientApi.Data.City", null)
+                    b.HasOne("BankClientApi.Data.City", "City")
                         .WithMany("Clients")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("BankClientApi.Data.City", b =>
