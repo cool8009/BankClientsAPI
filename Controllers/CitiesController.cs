@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BankClientApi.Data;
+using AutoMapper;
+using BankClientApi.Models.City;
 
 namespace BankClientApi.Controllers
 {
@@ -14,90 +16,35 @@ namespace BankClientApi.Controllers
     public class CitiesController : ControllerBase
     {
         private readonly BankClientsDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CitiesController(BankClientsDbContext context)
+        public CitiesController(BankClientsDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Cities
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<City>>> GetCities()
+        public async Task<ActionResult<IEnumerable<GetCityDto>>> GetCities()
         {
-            var cities = await _context.Cities.ToListAsync(); 
-            return Ok(cities);
+            var cities = await _context.Cities.ToListAsync();
+            var records = _mapper.Map<List<GetCityDto>>(cities);
+            return Ok(records);
         }
 
         // GET: api/Cities/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<City>> GetCity(int id)
+        public async Task<ActionResult<GetCityDto>> GetCity(int id)
         {
             var city = await _context.Cities.FindAsync(id);
-
+            var records = _mapper.Map<GetCityDto>(city);  
             if (city == null)
             {
                 return NotFound();
             }
 
-            return Ok(city);
-        }
-
-        // PUT: api/Cities/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCity(int id, City city)
-        {
-            if (id != city.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(city).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CityExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Cities
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<City>> PostCity(City city)
-        {
-            _context.Cities.Add(city);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCity", new { id = city.Id }, city);
-        }
-
-        // DELETE: api/Cities/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCity(int id)
-        {
-            var city = await _context.Cities.FindAsync(id);
-            if (city == null)
-            {
-                return NotFound();
-            }
-
-            _context.Cities.Remove(city);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok(records);
         }
 
         private bool CityExists(int id)

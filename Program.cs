@@ -1,6 +1,11 @@
+using BankClientApi.Configurations;
+using BankClientApi.Contracts;
 using BankClientApi.Data;
+using BankClientApi.Repository;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +30,11 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
+builder.Services.AddAutoMapper(typeof(MapperConfig));
+
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IClientsRepository,ClientsRepository>();
+builder.Services.AddScoped<ICitiesRepository, CitiesRepository>();
 
 var app = builder.Build();
 

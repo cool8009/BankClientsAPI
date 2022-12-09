@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BankClientApi.Data;
+using BankClientApi.Models.Client;
+using BankClientApi.Configurations;
+using AutoMapper;
+using BankClientApi.Contracts;
 
 namespace BankClientApi.Controllers
 {
@@ -13,71 +17,44 @@ namespace BankClientApi.Controllers
     [ApiController]
     public class ClientsController : ControllerBase
     {
-        private readonly BankClientsDbContext _context;
+        private readonly IClientsRepository _clientsRepository;
+        private readonly IMapper _mapper;
 
-        public ClientsController(BankClientsDbContext context)
+        public ClientsController(IClientsRepository clientsRepository, IMapper mapper)
         {
-            _context = context;
+            _clientsRepository = clientsRepository;
+            _mapper = mapper;
         }
 
         // GET: api/Clients
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Client>>> GetClients()
+        public async Task<ActionResult<IEnumerable<GetClientDto>>> GetClients()
         {
-            var clients = await _context.Clients.ToListAsync();
-            return Ok(clients);
+            var clients = await _clientsRepository.GetAllAsync();
+            var records = _mapper.Map<List<GetClientDto>>(clients);
+            return Ok(records);
         }
 
         // GET: api/Clients/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Client>> GetClient(int id)
+        public async Task<ActionResult<GetClientDto>> GetClient(int id)
         {
-            var client = await _context.Clients.FindAsync(id);
-
+            var client = await _clientsRepository.GetAsync(id);
+            var records = _mapper.Map<GetClientDto>(client);
             if (client == null)
             {
                 return NotFound();
             }
 
-            return Ok(client);
-        }
-
-        // PUT: api/Clients/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutClient(int id, Client client)
-        {
-            if (id != client.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(client).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ClientExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(records);
         }
 
         // POST: api/Clients
         [HttpPost]
-        public async Task<ActionResult<Client>> PostClient(Client client)
+        public async Task<ActionResult<CreateClientDto>> PostClient(CreateClientDto createClient)
         {
-            _context.Clients.Add(client);
-            await _context.SaveChangesAsync();
+            var client = _mapper.Map<Client>(createClient);
+            await _clientsRepository.AddAsync(client);
 
             return CreatedAtAction("GetClient", new { id = client.Id }, client);
         }
@@ -86,21 +63,19 @@ namespace BankClientApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClient(int id)
         {
-            var client = await _context.Clients.FindAsync(id);
+            var client = await _clientsRepository.GetAsync(id);
             if (client == null)
             {
                 return NotFound();
             }
 
-            _context.Clients.Remove(client);
-            await _context.SaveChangesAsync();
-
+            await _clientsRepository.DeleteAsync(id);
             return NoContent();
         }
 
-        private bool ClientExists(int id)
+        private async Task<bool> ClientExists(int id)
         {
-            return _context.Clients.Any(e => e.Id == id);
+            return await _clientsRepository.Exists(id);
         }
     }
 }
