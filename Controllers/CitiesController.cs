@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BankClientApi.Data;
 using AutoMapper;
 using BankClientApi.Models.City;
+using BankClientApi.Contracts;
 
 namespace BankClientApi.Controllers
 {
@@ -15,12 +16,12 @@ namespace BankClientApi.Controllers
     [ApiController]
     public class CitiesController : ControllerBase
     {
-        private readonly BankClientsDbContext _context;
+        private readonly ICitiesRepository _citiesRepository;
         private readonly IMapper _mapper;
 
-        public CitiesController(BankClientsDbContext context, IMapper mapper)
+        public CitiesController(ICitiesRepository citiesRepository, IMapper mapper)
         {
-            _context = context;
+            this._citiesRepository = citiesRepository;
             _mapper = mapper;
         }
 
@@ -28,7 +29,7 @@ namespace BankClientApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetCityDto>>> GetCities()
         {
-            var cities = await _context.Cities.ToListAsync();
+            var cities = await _citiesRepository.GetAllCitiesAsync();
             var records = _mapper.Map<List<GetCityDto>>(cities);
             return Ok(records);
         }
@@ -37,7 +38,7 @@ namespace BankClientApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GetCityDto>> GetCity(int id)
         {
-            var city = await _context.Cities.FindAsync(id);
+            var city = await _citiesRepository.GetAsync(id);
             var records = _mapper.Map<GetCityDto>(city);  
             if (city == null)
             {
@@ -47,9 +48,9 @@ namespace BankClientApi.Controllers
             return Ok(records);
         }
 
-        private bool CityExists(int id)
+        private async Task<bool> CityExists(int id)
         {
-            return _context.Cities.Any(e => e.Id == id);
+            return await _citiesRepository.Exists(id);
         }
     }
 }

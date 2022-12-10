@@ -6,7 +6,7 @@ namespace BankClientApi.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly BankClientsDbContext _context;
+        protected readonly BankClientsDbContext _context;
         public GenericRepository(BankClientsDbContext context)
         {
             _context = context;
