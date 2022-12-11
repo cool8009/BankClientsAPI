@@ -225,7 +225,7 @@ const ClientForm = ({ cities, loading }) => {
                         fullWidth
                         required
                         inputProps={{ 
-                            pattern: "^[0-9]{9}$",
+                            pattern: "^[0-9]{0,9}$",
                             maxLength: 9,
                         }}
                         id="accountnumber"
@@ -234,6 +234,9 @@ const ClientForm = ({ cities, loading }) => {
                         name="accountnumber"
                         onChange={handleChange}
                         />
+                        {error && error.accountnumber && (
+                            <FormHelperText error>Invalid Input. Up to 9 numbers only.</FormHelperText>
+                        )}
                     </Grid>
                     <Grid item xs={12} >
                         <button type="submit">Submit</button>

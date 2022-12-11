@@ -28,7 +28,7 @@ namespace BankClientApi.Models.Client
         [Required]
         public int BankBranch { get; set; }
         [Required]
-        [RegularExpression("^[0-9]{0,10}$", ErrorMessage = "Bank account number must be numeric and contain 9 numbers")]
+        [RegularExpression("^[0-9]{0,9}$", ErrorMessage = "Bank account number must be numeric and contain 9 numbers")]
         public string BankAccountNumber { get; set; } 
 
 
