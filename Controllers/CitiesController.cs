@@ -29,23 +29,38 @@ namespace BankClientApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetCityDto>>> GetCities()
         {
-            var cities = await _citiesRepository.GetAllCitiesAsync();
-            var records = _mapper.Map<List<GetCityDto>>(cities);
-            return Ok(records);
+            try
+            {
+                var cities = await _citiesRepository.GetAllCitiesAsync();
+                var records = _mapper.Map<List<GetCityDto>>(cities);
+                return Ok(records);
+
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET: api/Cities/5
         [HttpGet("{id}")]
         public async Task<ActionResult<GetCityDto>> GetCity(int id)
         {
-            var city = await _citiesRepository.GetAsync(id);
-            var records = _mapper.Map<GetCityDto>(city);  
-            if (city == null)
+            try
             {
-                return NotFound();
-            }
+                var city = await _citiesRepository.GetAsync(id);
+                var records = _mapper.Map<GetCityDto>(city);  
+                if (city == null)
+                {
+                    return NotFound();
+                }
 
-            return Ok(records);
+                return Ok(records);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         private async Task<bool> CityExists(int id)

@@ -17,23 +17,44 @@ namespace BankClientApi.Controllers
             this._bankService = bankService;
         }
         [HttpGet]
-        public async Task<IEnumerable<Bank>> GetBankData()
+        public async Task<ActionResult<IEnumerable<Bank>>> GetBankData()
         {
-            var banks = await _bankService.GetBankDataAsync();
-            return banks;
+            try
+            {
+                var banks = await _bankService.GetBankDataAsync();
+                return banks;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet("{id}")]
-        public async Task<IEnumerable<BankBranch>> GetBranchesForId(int id)
+        public async  Task<ActionResult<IEnumerable<BankBranch>>> GetBranchesForId(int id)
         {
-            var branchesForBankId = await _bankService.GetBankBranchDataForBankAsync(id);
-            return branchesForBankId;
+            try
+            {
+                var branchesForBankId = await _bankService.GetBankBranchDataForBankAsync(id);
+                return branchesForBankId;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet]
         [Route("/getallbranches")]
-        public async Task<IEnumerable<BankBranch>> GetAllBranches()
+        public async Task<ActionResult<IEnumerable<BankBranch>>> GetAllBranches()
         {
-            var branchesForBankId = await _bankService.GetAllBankBranchDataAsync();
-            return branchesForBankId;
+            try
+            {
+                var branchesForBankId = await _bankService.GetAllBankBranchDataAsync();
+                return branchesForBankId;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
