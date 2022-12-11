@@ -33,5 +33,6 @@ namespace BankClientApi.Models.Client
 
 
 
+
     }
 }

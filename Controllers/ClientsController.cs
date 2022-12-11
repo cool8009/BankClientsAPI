@@ -56,7 +56,7 @@ namespace BankClientApi.Controllers
             var client = _mapper.Map<Client>(createClient);
             await _clientsRepository.AddAsync(client);
 
-            return CreatedAtAction("GetClient", new { id = client.Id }, client);
+            return CreatedAtAction("GetClient", new { id = client.Id }, createClient);
         }
 
         // DELETE: api/Clients/5
