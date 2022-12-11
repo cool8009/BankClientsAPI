@@ -8,7 +8,7 @@ namespace BankClientApi.Models.Client
         //data transfer object for the Client db model
         [Required]
         [StringLength(20, ErrorMessage = "Name length can't be more than 20.")]
-        [RegularExpression(@"^[א-ת'\-\s]+$",
+        [RegularExpression(@"[א-תןםץךף'\s-]+",
          ErrorMessage = "Only Hebrew and the following: ' - are allowed.")]
         public string HebrewName { get; set; }
         [Required]
@@ -28,7 +28,7 @@ namespace BankClientApi.Models.Client
         [Required]
         public int BankBranch { get; set; }
         [Required]
-        [RegularExpression("^[0-9]{0,10}$", ErrorMessage = "SSN must be numeric and contain 9 numbers")]
+        [RegularExpression("^[0-9]{0,10}$", ErrorMessage = "Bank account number must be numeric and contain 9 numbers")]
         public string BankAccountNumber { get; set; } 
 
 

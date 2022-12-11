@@ -28,5 +28,12 @@ namespace BankClientApi.Controllers
             var branchesForBankId = await _bankService.GetBankBranchDataForBankAsync(id);
             return branchesForBankId;
         }
+        [HttpGet]
+        [Route("/getallbranches")]
+        public async Task<IEnumerable<BankBranch>> GetAllBranches()
+        {
+            var branchesForBankId = await _bankService.GetAllBankBranchDataAsync();
+            return branchesForBankId;
+        }
     }
 }
