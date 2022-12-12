@@ -17,6 +17,7 @@ namespace BankClientApi.Controllers
     [ApiController]
     public class ClientsController : ControllerBase
     {
+        // Inject the IClientsRepository and IMapper dependencies
         private readonly IClientsRepository _clientsRepository;
         private readonly IMapper _mapper;
 
@@ -27,6 +28,10 @@ namespace BankClientApi.Controllers
         }
 
         // GET: api/Clients
+        /// <summary>
+        /// GETs a list of all clients.
+        /// </summary>
+        /// <returns>List of clients from the database</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetClientDto>>> GetClients()
         {
@@ -41,7 +46,11 @@ namespace BankClientApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        /// <summary>
+        /// Gets a specific client by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>ClientDto from the database</returns>
         // GET: api/Clients/5
         [HttpGet("{id}")]
         public async Task<ActionResult<GetClientDto>> GetClient(int id)
@@ -64,6 +73,11 @@ namespace BankClientApi.Controllers
         }
 
         // POST: api/Clients
+        /// <summary>
+        /// Creates a new client in the database
+        /// </summary>
+        /// <param name="createClient"></param>
+        /// <returns>The new client object if successful, error message if not</returns>
         [HttpPost]
         public async Task<ActionResult<CreateClientDto>> PostClient(CreateClientDto createClient)
         {
@@ -88,7 +102,11 @@ namespace BankClientApi.Controllers
             }
             
         }
-
+        /// <summary>
+        /// Deletes a client from the database by on id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>NoContent</returns>
         // DELETE: api/Clients/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClient(int id)

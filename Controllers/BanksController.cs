@@ -10,12 +10,17 @@ namespace BankClientApi.Controllers
     [ApiController]
     public class BanksController : ControllerBase
     {
+        //injecting the bank service
         private readonly IBankService _bankService;
 
         public BanksController(IBankService bankService)
         {
             this._bankService = bankService;
         }
+        /// <summary>
+        /// Gets the list of banks from an external API
+        /// </summary>
+        /// <returns>A list of Bank objects</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Bank>>> GetBankData()
         {
@@ -29,8 +34,13 @@ namespace BankClientApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        /// <summary>
+        /// Gets the available branches for a given bank id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>A list of BankBranch objects</returns>
         [HttpGet("{id}")]
-        public async  Task<ActionResult<IEnumerable<BankBranch>>> GetBranchesForId(int id)
+        public async Task<ActionResult<IEnumerable<BankBranch>>> GetBranchesForId(int id)
         {
             try
             {
@@ -42,6 +52,10 @@ namespace BankClientApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        /// <summary>
+        /// Gets all bank branches for all banks
+        /// </summary>
+        /// <returns>A list of BankBranch objects</returns>
         [HttpGet]
         [Route("/getallbranches")]
         public async Task<ActionResult<IEnumerable<BankBranch>>> GetAllBranches()
